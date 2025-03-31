@@ -11,7 +11,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -23,7 +23,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def analyze_with_gemini(text_content):
-    """Use Gemini to analyze the PDF content and extract important topics"""
+    
     try:
         # Combine all text content
         combined_text = " ".join(text_content)
@@ -39,7 +39,6 @@ def analyze_with_gemini(text_content):
         {combined_text[:10000]}  # Limiting text length to avoid token limits
         """
         
-        # Generate content with Gemini - updated method
         generation_config = {
             "temperature": 0.2,
             "top_p": 0.95,
@@ -54,7 +53,6 @@ def analyze_with_gemini(text_content):
         
         response = model.generate_content(prompt)
         
-        # Extract the generated text
         analysis_text = response.text
         
         return {
@@ -79,10 +77,9 @@ def extract_pdf_content(filepath):
                 page = reader.pages[page_num]
                 text = page.extract_text()
                 if text is None:
-                    text = ""  # Ensure text is a string
+                    text = "" 
                 text_content.append(text)
             
-            # Get analysis from Gemini
             analysis_result = analyze_with_gemini(text_content)
             
             if analysis_result['success']:
@@ -126,14 +123,12 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             
-            # Get file info
             file_size = os.path.getsize(filepath)
             
             # Extract content from PDF
             pdf_data = extract_pdf_content(filepath)
             
             if pdf_data['success']:
-                # Ensure content is serializable
                 content = [str(text) for text in pdf_data['content']]
                 
                 return jsonify({
