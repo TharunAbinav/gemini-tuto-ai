@@ -16,7 +16,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 #Gemini client
-genai.configure(api_key="YOUR api key")
+genai.configure(api_key="YOUR_API_key")
 MODEL_ID = "gemini-2.0-flash"
 
 def allowed_file(filename):
